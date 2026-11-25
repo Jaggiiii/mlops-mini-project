@@ -1,0 +1,30 @@
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+    - data/housing.csv
+    - src/prepare.py
+    params:
+    - split.random_state
+    - split.test_size
+    outs:
+    - outputs/test.csv
+    - outputs/train.csv
+  train:
+    cmd: python src/train.py
+    deps:
+    - outputs/train.csv
+    - src/train.py
+    params:
+    - model.fit_intercept
+    outs:
+    - outputs/model.pkl
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - outputs/model.pkl
+    - outputs/test.csv
+    - src/evaluate.py
+    metrics:
+    - outputs/metrics.json:
+        cache: false
